@@ -1,0 +1,103 @@
+import telebot
+from telebot import *
+import time
+import pickle
+
+bot = telebot.TeleBot("2037923166:AAF69wiYleugnHBJOw8h6ycgrwkvxupRSO0")
+
+ids = []
+have = []
+nhave = []
+pro = [986022683]
+
+try:
+    with open('data.sav', 'rb') as f:
+        ids, have, nhave, pro = pickle.load(f)
+except:
+    pass
+
+
+def save():
+    with open('data.sav', 'wb') as f:
+        pickle.dump([ids, have, nhave, pro], f)
+
+@bot.message_handler(commands=['pro'])
+def start(message):
+    a = message.text
+    if message.chat.id == 831689238:
+        pro.append(int(a.replace("/pro ", "")))
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    if message.chat.id in ids:
+        pass
+    else:
+        ids.append(message.chat.id)
+        save()
+    keyboardmain = types.InlineKeyboardMarkup(row_width=2)
+    second_button = types.InlineKeyboardButton(text="Есть", callback_data="like"+'|'+str(message.chat.id))
+    button3 = types.InlineKeyboardButton(text="Нет", callback_data="like2"+'|'+str(message.chat.id))
+    keyboardmain.add(second_button, button3)
+    bot.send_message(message.chat.id, "У тебя есть под?:", reply_markup=keyboardmain)
+
+@bot.callback_query_handler(func=lambda call:True)
+def callback_inline1(call):
+    bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
+    calldata = call.data.split('|')[0]
+    ID = int(call.data.split('|')[1])
+    if calldata == "like":
+        try:
+            nhave.remove(ID)
+        except:
+            pass
+        have.append(ID)
+        save()
+        bot.send_message(ID, 'Ты можешь изменить это значение в любой момент написав "/start"\nПоказать команды - /button')
+    elif calldata == "like2":
+        try:
+            have.remove(ID)
+        except:
+            pass
+        nhave.append(ID)
+        save()
+        bot.send_message(ID, 'Ты можешь изменить это значение в любой момент написав "/start"\nПоказать команды - /button\nПокупка PRO аккаута(50руб) даёт возможность посить каждые 10 минут навсегода! За покупкой к @PROsupport_nakrutka_tiktok')
+
+@bot.message_handler(commands=['button'])
+def button_message(message):
+    if message.chat.id in have:
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1=types.KeyboardButton("Пригласить людей")
+        markup.add(item1)
+        bot.send_message(message.chat.id,'Выберите что вам надо(можно воспользоваться раз в 50 минут!)',reply_markup=markup)
+    elif message.chat.id in nhave:
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1=types.KeyboardButton("Попросить под")
+        markup.add(item1)
+        bot.send_message(message.chat.id,'Выберите что вам надо(можно воспользоваться раз в 50 минут!)\nПокупка PRO аккаута(50руб) даёт возможность посить каждые 10 минут навсегода! За покупкой к @PROsupport_nakrutka_tiktok',reply_markup=markup)
+@bot.message_handler(content_types='text')
+def message_reply(message):
+    if message.text=="Пригласить людей":
+        if message.chat.id in pro:
+            for ID in nhave:
+                bot.send_message(ID,"♦️*Кто то хочет предложить вам под*♦️", parse_mode= "Markdown")
+            bot.send_message(message.chat.id,"Подождите 10 минут прежде чем попросить ещё раз!")
+            time.sleep(600)
+        else:
+            for ID in nhave:
+                bot.send_message(ID,"♦️*Кто то хочет предложить вам под*♦️", parse_mode= "Markdown")
+            bot.send_message(message.chat.id,"Подождите 50 минут прежде чем попросить ещё раз!")
+            time.sleep(3000)
+    if message.text=="Попросить под":
+        if message.chat.id in pro:
+            for ID in have:
+                bot.send_message(ID,"♦️*Кто то хочет попросить у вас под*♦️", parse_mode= "Markdown")
+            bot.send_message(message.chat.id,"Подождите 10 минут прежде чем попросить ещё раз!)\nПокупка PRO аккаута(50руб) даёт возможность посить каждые 10 минут навсегода! За покупкой к @PROsupport_nakrutka_tiktok")
+            time.sleep(600)
+        else:
+            for ID in have:
+                bot.send_message(ID,"♦️*Кто то хочет попросить у вас под*♦️", parse_mode= "Markdown")
+            bot.send_message(message.chat.id,"Подождите 50 минут прежде чем попросить ещё раз!)\nПокупка PRO аккаута(50руб) даёт возможность посить каждые 10 минут навсегода! За покупкой к @PROsupport_nakrutka_tiktok")
+            time.sleep(3000)
+
+
+bot.infinity_polling()
