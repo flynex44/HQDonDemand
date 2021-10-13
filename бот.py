@@ -27,6 +27,12 @@ def start(message):
     if message.chat.id == 831689238:
         pro.append(int(a.replace("/pro ", "")))
 
+@bot.message_handler(commands=['s'])
+def start(message):
+    if message.chat.id == 831689238:
+        stat = "Статистика:\n"+"Пользователей всего: "+str(ids)+"\n"+"С подом: "+str(have)+"\n"+"Без: "+str(nhave)+"\n"+"PRO: "+str(pro)
+        bot.send_message(831689238, stat)
+
 @bot.message_handler(commands=['start'])
 def start(message):
     if message.chat.id in ids:
